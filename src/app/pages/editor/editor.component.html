@@ -1,6 +1,12 @@
 <div class="container h-screen w-full flex">
     <app-sidebar/>
-    <div class="editor-container h-full w-full">
-        <div class="editor h-full w-full"></div>
+    <div class="editor-container flex flex-col h-full w-full">
+        <div class="editor flex-1 w-full" [style.height.px]="editorHeight"></div>
+        <div id="resizer"
+            class="h-1 cursor-row-resize hover:cursor-row-resize"
+            style="background: rgb(111, 111, 111);"
+            (mousedown)="startResizing($event)">
+        </div>
+        <app-output [height]="outputHeight"/>
     </div>
 </div>
