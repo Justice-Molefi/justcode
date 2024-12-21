@@ -3,11 +3,17 @@ import loader from '@monaco-editor/loader';
 import * as monaco from 'monaco-editor'
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { OutputComponent } from './output/output.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPlay, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faJs } from '@fortawesome/free-brands-svg-icons';
+
+
+
 
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [SidebarComponent, OutputComponent],
+  imports: [SidebarComponent, OutputComponent, FontAwesomeModule],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
@@ -18,7 +24,10 @@ export class EditorComponent implements OnInit, AfterViewInit{
 
   editorHeight!: number;
   outputHeight : number = 100;
+  actionBarHeight: number = 70;
   isResizing: boolean = false;
+  faPlay: IconDefinition = faPlay;
+  faJs: IconDefinition = faJs;
 
 
 
@@ -75,6 +84,6 @@ export class EditorComponent implements OnInit, AfterViewInit{
   }
 
   calculateEditorHeight() : void{
-    this.editorHeight = window.innerHeight - this.outputHeight - 4;
+    this.editorHeight = window.innerHeight - this.outputHeight - this.actionBarHeight - 4;
   }
 }
