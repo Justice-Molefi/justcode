@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import loader from '@monaco-editor/loader';
 import * as monaco from 'monaco-editor'
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { OutputComponent } from './output/output.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlay, IconDefinition } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +12,7 @@ import { faJs } from '@fortawesome/free-brands-svg-icons';
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [SidebarComponent, OutputComponent, FontAwesomeModule],
+  imports: [OutputComponent, FontAwesomeModule],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
