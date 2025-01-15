@@ -5,6 +5,13 @@ import { OutputComponent } from './output/output.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlay, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { faJs } from '@fortawesome/free-brands-svg-icons';
+import { Language } from '../../models/enums/language';
+import { NgFor } from '@angular/common';
+import { FormsModule, NgModel } from '@angular/forms';
+import { BoilerplateService } from '../../service/boilerplate.service';
+import { CodeRequest } from '../../models/dto/code-request';
+import { LanguageExtensionService } from '../../service/language-extension.service';
+import { EditorService } from '../../service/editor.service';
 
 
 
@@ -12,7 +19,7 @@ import { faJs } from '@fortawesome/free-brands-svg-icons';
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [OutputComponent, FontAwesomeModule],
+  imports: [OutputComponent, FontAwesomeModule, NgFor, FormsModule],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
@@ -20,6 +27,10 @@ export class EditorComponent implements OnInit, AfterViewInit{
 
   @Input() editorOptions: monaco.editor.IStandaloneEditorConstructionOptions | undefined;
   private editorInstance!: monaco.editor.IStandaloneCodeEditor; 
+
+  languages : string[] = [];
+  selectedLanguage: string = 'Java';
+  output: string = '';
 
   editorHeight!: number;
   outputHeight : number = 100;
@@ -30,7 +41,11 @@ export class EditorComponent implements OnInit, AfterViewInit{
 
 
 
-  constructor(private el: ElementRef){
+  constructor(private el: ElementRef, 
+              private boilerPlateService: BoilerplateService, 
+              private langaugeExtensionService: LanguageExtensionService,
+              private editorService: EditorService){
+    this.languages = Object.values(Language);
   }
 
   ngOnInit(){
@@ -41,8 +56,10 @@ export class EditorComponent implements OnInit, AfterViewInit{
         fontSize: 20,
         automaticLayout: true,
         ...this.editorOptions
-      })
+      });
+      this.setBoilerPlateCode();
     })
+
   }
 
   ngAfterViewInit(): void {
@@ -84,5 +101,30 @@ export class EditorComponent implements OnInit, AfterViewInit{
 
   calculateEditorHeight() : void{
     this.editorHeight = window.innerHeight - this.outputHeight - this.actionBarHeight - 4;
+  }
+
+  onLanguageChange(event: Event){
+    this.selectedLanguage = (event.target as HTMLSelectElement).value;
+    this.setBoilerPlateCode();
+  }
+
+  setBoilerPlateCode(){
+    const boilerPlateCode  = this.boilerPlateService.getBoilerPlate(this.selectedLanguage);
+    this.editorInstance.setValue(boilerPlateCode);
+  }
+
+  runCode(){
+    const editorContent = this.editorInstance.getValue();
+    const extension = this.langaugeExtensionService.getExtension(this.selectedLanguage);
+    let codeRequest = new CodeRequest(this.selectedLanguage,editorContent, extension);
+    this.editorService.execute(codeRequest).subscribe({
+      next: (val) => {
+        this.output = "running code..."
+        this.output = val;
+      },
+      error: err => {
+        console.log("Something went wrong: " + err.message)
+      }
+    })
   }
 }

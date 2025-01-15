@@ -1,5 +1,5 @@
 export enum Language{
-    Java,
-    Javascript,
-    CSharp
+    Java = 'Java',
+    Javascript = 'Javascript',
+    CSharp = 'CSharp'
 }

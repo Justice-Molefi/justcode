@@ -9,4 +9,5 @@ import { Component, Input } from '@angular/core';
 })
 export class OutputComponent {
   @Input() height!: number;
+  @Input() output!: string;
 }

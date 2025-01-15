@@ -6,12 +6,14 @@
                 <img src="../../../../assets/just-code-e.png" height="30" width="30" alt="logo">
             </div>
             <div class="actions flex">
-                <fa-icon [icon]="faPlay" class="pr-16 hover:cursor-pointer" style="color: white; font-size: 20px;"></fa-icon>
+                <fa-icon [icon]="faPlay" (click)="runCode()" class="pr-16 hover:cursor-pointer" style="color: white; font-size: 20px;"></fa-icon>
                 <div class="languages bg-transparent">
-                    <select name="language" id="language" class="bg-transparent text-slate-300 rounded-md" style="border: 1px solid rgb(160, 160, 160);padding: 2px;">
-                        <option class="bg-gray-950 text-white" value="">Javascript</option>
-                        <option class="bg-gray-950 text-white" value="">C#</option>
-                        <option class="bg-gray-950 text-white" value="">Java</option>
+                    <select name="language" id="language" class="bg-transparent text-slate-300 rounded-md" 
+                            style="border: 1px solid rgb(160, 160, 160);padding: 2px;"
+                            [(ngModel)]="selectedLanguage"
+                            (change)="onLanguageChange($event)"
+                            >
+                        <option *ngFor="let language of languages" [value]="language" class="bg-gray-950">{{ language }}</option>
                     </select>
                 </div>
             </div>
@@ -24,6 +26,6 @@
             (mousedown)="startResizing($event)">
         </div>
         <!-- OUTPUT WINDOW -->
-        <app-output [height]="outputHeight"/>
+        <app-output [height]="outputHeight" [output]="output"/>
     </div>
 </div>
