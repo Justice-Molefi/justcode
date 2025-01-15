@@ -31,6 +31,7 @@ export class EditorComponent implements OnInit, AfterViewInit{
   languages : string[] = [];
   selectedLanguage: string = 'Java';
   output: string = '';
+  codeExecSuccess: boolean = true;
 
   editorHeight!: number;
   outputHeight : number = 100;
@@ -119,8 +120,10 @@ export class EditorComponent implements OnInit, AfterViewInit{
     let codeRequest = new CodeRequest(this.selectedLanguage,editorContent, extension);
     this.editorService.execute(codeRequest).subscribe({
       next: (val) => {
-        this.output = "running code..."
-        this.output = val;
+        if(!val.success) this.codeExecSuccess = false;
+        else this.codeExecSuccess = true;
+
+        this.output = val.output;       
       },
       error: err => {
         console.log("Something went wrong: " + err.message)
