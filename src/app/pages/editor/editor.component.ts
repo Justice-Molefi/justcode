@@ -12,6 +12,7 @@ import { BoilerplateService } from '../../service/boilerplate.service';
 import { CodeRequest } from '../../models/dto/code-request';
 import { LanguageExtensionService } from '../../service/language-extension.service';
 import { EditorService } from '../../service/editor.service';
+import { conf, language } from '../../service/languages/java';
 
 
 
@@ -50,9 +51,13 @@ export class EditorComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(){
+    monaco.languages.register({ id: 'java' });
+    monaco.languages.setLanguageConfiguration('java', conf);
+    monaco.languages.setMonarchTokensProvider('java', language);
+
     loader.init().then(monacoInstance => {
       this.editorInstance = monacoInstance.editor.create(this.el.nativeElement.querySelector('.editor'),{
-        language: 'javascript',
+        language: 'java',
         theme: 'vs-dark',
         fontSize: 20,
         automaticLayout: true,
