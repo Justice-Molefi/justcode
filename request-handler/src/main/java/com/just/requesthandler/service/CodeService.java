@@ -1,8 +1,7 @@
 package com.just.requesthandler.service;
 
 
-import com.just.requesthandler.dto.CodeRequest;
-import com.just.requesthandler.dto.QueueCodeWrapper;
+import com.just.requesthandler.dto.QueueDataWrapper;
 import com.just.requesthandler.rabbitMQ.RabbitMQConfig;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,8 +18,12 @@ public class CodeService {
         this.config = config;
     }
 
-    public void forward(QueueCodeWrapper queueCodeWrapper){
+    public void forward(QueueDataWrapper queueDataWrapper){
         System.out.println("Sending message...");
-        rabbitTemplate.convertAndSend(config.getTopicExchangeName(), config.getRoutingKey(), queueCodeWrapper);
+        rabbitTemplate.convertAndSend(config.getTopicExchangeName(), config.getRoutingKey(), queueDataWrapper, message -> {
+            System.out.println("Sent Headers: " + message.getMessageProperties().getHeaders());
+            System.out.println("Sent Content Type: " + message.getMessageProperties().getContentType());
+            System.out.println("Sent Body: " + new String(message.getBody()));
+            return message;});
     }
 }
