@@ -1,9 +1,22 @@
 services:
   rabbitmq:
-    container_name: 'guide-rabbit'
+    container_name: 'jc-rabbit'
     image: 'rabbitmq:latest'
     environment:
       - 'RABBITMQ_DEFAULT_PASS=secret'
       - 'RABBITMQ_DEFAULT_USER=myuser'
     ports:
       - '5672:5672'
+
+  java-executor:
+    build:
+      context: ./code-execution
+      dockerfile: Dockerfile
+    image: java-secure-exec  # Optional, explicit name
+    mem_limit: 256m
+    cpus: 0.5
+    network_mode: none
+    user: appuser
+    deploy:
+      mode: replicated
+      replicas: 0

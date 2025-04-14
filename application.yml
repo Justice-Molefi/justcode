@@ -1,0 +1,6 @@
+spring:
+  docker:
+    compose:
+      file: docker-compose.yml
+      startup: enabled
+      services: rabbitmq
