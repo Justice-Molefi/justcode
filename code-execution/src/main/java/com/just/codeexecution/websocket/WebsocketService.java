@@ -14,7 +14,7 @@ public class WebsocketService {
     }
 
     public void sendOutput(UUID id, String output){
-        String destination = "queue/response/" + id;
+        String destination = "queue/response/" + id.toString();
         messagingTemplate.convertAndSend(destination, output);
     }
 }

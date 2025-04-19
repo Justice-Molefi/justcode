@@ -87,6 +87,7 @@ public class JavaCodeExecutor {
 
             // Step 2: Execute if compilation succeeded
             if (exitCode == 0) {
+                websocketService.sendOutput(id,"Compilation successful<br>Executing code...");
                 run(tempDir, id);
             } else {
                 System.out.println("Execution skipped due to compilation failure.");
