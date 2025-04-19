@@ -1,16 +1,21 @@
 package com.just.codeexecution.execution.java;
 
 import com.just.codeexecution.dto.ProcessResult;
+import com.just.codeexecution.websocket.WebsocketService;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class JavaCodeExecutor {
+    private final WebsocketService websocketService;
+    private final String destination = "queue/response/";
+
+    public JavaCodeExecutor(WebsocketService websocketService) {
+        this.websocketService = websocketService;
+    }
+
     private Map<String, File> writeToTempFile(String code) throws FileNotFoundException {
         Map<String, File> files = new HashMap<>();
         File tempDir = new File("temp");
@@ -29,7 +34,7 @@ public class JavaCodeExecutor {
         return files;
     }
 
-    private ProcessResult compileCode(File tempDir, File codeFile) throws IOException, InterruptedException {
+    private int compileCode(File tempDir, UUID id) throws IOException, InterruptedException {
         List<String> command = Arrays.asList(
                 "docker", "run", "--rm",
                 "-v", tempDir.getAbsolutePath() + ":/app",
@@ -41,17 +46,16 @@ public class JavaCodeExecutor {
         );
 
         ProcessBuilder pb = new ProcessBuilder(command);
+        pb.redirectErrorStream(true);
         Process process = pb.start();
 
         // Capture output and error streams
-        String output = readStream(process.getInputStream());
-        String error = readStream(process.getErrorStream());
-        int exitCode = process.waitFor();
+        readStream(process.getInputStream(), id);
 
-        return new ProcessResult(output, error, exitCode);
+        return process.waitFor();
     }
     // Execute compiled Java code in Docker
-    private static ProcessResult run(File tempDir) throws IOException, InterruptedException {
+    private int run(File tempDir, UUID id) throws IOException, InterruptedException {
         List<String> command = Arrays.asList(
                 "docker", "run", "--rm",
                 "-v", tempDir.getAbsolutePath() + ":/app",
@@ -64,34 +68,26 @@ public class JavaCodeExecutor {
 
 
         ProcessBuilder pb = new ProcessBuilder(command);
+        pb.redirectErrorStream(true);
         Process process = pb.start();
 
         // Capture output and error streams
-        String output = readStream(process.getInputStream());
-        String error = readStream(process.getErrorStream());
-        int exitCode = process.waitFor();
-
-        return new ProcessResult(output, error, exitCode);
+        readStream(process.getInputStream(), id);
+        return process.waitFor();
     }
 
-    public void executeCode(String code) throws IOException, InterruptedException {
+    public void executeCode(String code, UUID id) throws IOException, InterruptedException {
         Map<String, File> files = writeToTempFile(code);
         File tempDir = files.get("tempDir");
         File codeFile = files.get("codeFile");
 
         try{
             // Step 1: Compile the code
-            ProcessResult compileResult = compileCode(tempDir, codeFile);
-            System.out.println("Compilation Exit Code: " + compileResult.getExitCode());
-            System.out.println("Compilation Output: " + compileResult.getOutput());
-            System.out.println("Compilation Error: " + compileResult.getError());
+            int exitCode = compileCode(tempDir,id);
 
             // Step 2: Execute if compilation succeeded
-            if (compileResult.getExitCode() == 0) {
-                ProcessResult execResult = run(tempDir);
-                System.out.println("Execution Exit Code: " + execResult.getExitCode());
-                System.out.println("Execution Output: " + execResult.getOutput());
-                System.out.println("Execution Error: " + execResult.getError());
+            if (exitCode == 0) {
+                run(tempDir, id);
             } else {
                 System.out.println("Execution skipped due to compilation failure.");
             }
@@ -112,14 +108,16 @@ public class JavaCodeExecutor {
     }
 
     // Utility to read stream into string
-    private static String readStream(InputStream stream) throws IOException {
-        StringBuilder result = new StringBuilder();
+    private void readStream(InputStream stream, UUID id) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                result.append(line).append("\n");
+                if(websocketService != null)
+                    websocketService.sendOutput(id, line);
+                System.out.println("Code Output");
+                System.out.println("==================");
+                System.out.println(line);
             }
         }
-        return result.toString();
     }
 }

@@ -24,7 +24,7 @@ public class RabbitMQConsumer {
         log.info("Received payload {} from Queue {}", codeRequest, queueName);
 
         try{
-            javaCodeExecutor.executeCode(codeRequest.getCode());
+            javaCodeExecutor.executeCode(codeRequest.getCode(), codeRequest.getUuid());
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
