@@ -49,13 +49,12 @@ public class JavaCodeExecutor {
         pb.redirectErrorStream(true);
         Process process = pb.start();
 
-        // Capture output and error streams
         readStream(process.getInputStream(), id);
 
         return process.waitFor();
     }
     // Execute compiled Java code in Docker
-    private int run(File tempDir, UUID id) throws IOException, InterruptedException {
+    private void run(File tempDir, UUID id) throws IOException, InterruptedException {
         List<String> command = Arrays.asList(
                 "docker", "run", "--rm",
                 "-v", tempDir.getAbsolutePath() + ":/app",
@@ -73,7 +72,7 @@ public class JavaCodeExecutor {
 
         // Capture output and error streams
         readStream(process.getInputStream(), id);
-        return process.waitFor();
+        process.waitFor();
     }
 
     public void executeCode(String code, UUID id) throws IOException, InterruptedException {
@@ -87,7 +86,8 @@ public class JavaCodeExecutor {
 
             // Step 2: Execute if compilation succeeded
             if (exitCode == 0) {
-                websocketService.sendOutput(id,"Compilation successful<br>Executing code...");
+                websocketService.sendOutput(id,"Compilation successful");
+                websocketService.sendOutput(id,"Executing code...");
                 run(tempDir, id);
             } else {
                 System.out.println("Execution skipped due to compilation failure.");
@@ -112,11 +112,13 @@ public class JavaCodeExecutor {
     private void readStream(InputStream stream, UUID id) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
+
+            System.out.println("Code Output");
+            System.out.println("==================");
+
             while ((line = reader.readLine()) != null) {
                 if(websocketService != null)
                     websocketService.sendOutput(id, line);
-                System.out.println("Code Output");
-                System.out.println("==================");
                 System.out.println(line);
             }
         }

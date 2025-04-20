@@ -14,7 +14,7 @@ public class WebsocketService {
     }
 
     public void sendOutput(UUID id, String output){
-        String destination = "queue/response/" + id.toString();
+        String destination = "queue/response/d74f1a06-e9da-483c-bc92-c29d1920dca2";
         messagingTemplate.convertAndSend(destination, output);
     }
 }
