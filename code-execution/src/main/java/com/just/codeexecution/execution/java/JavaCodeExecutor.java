@@ -1,6 +1,5 @@
 package com.just.codeexecution.execution.java;
 
-import com.just.codeexecution.dto.ProcessResult;
 import com.just.codeexecution.websocket.WebsocketService;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,6 @@ import java.util.*;
 @Component
 public class JavaCodeExecutor {
     private final WebsocketService websocketService;
-    private final String destination = "queue/response/";
 
     public JavaCodeExecutor(WebsocketService websocketService) {
         this.websocketService = websocketService;
@@ -112,14 +110,9 @@ public class JavaCodeExecutor {
     private void readStream(InputStream stream, UUID id) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
-
-            System.out.println("Code Output");
-            System.out.println("==================");
-
             while ((line = reader.readLine()) != null) {
                 if(websocketService != null)
                     websocketService.sendOutput(id, line);
-                System.out.println(line);
             }
         }
     }
