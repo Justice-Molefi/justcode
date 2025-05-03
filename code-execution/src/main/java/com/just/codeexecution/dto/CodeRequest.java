@@ -15,13 +15,13 @@ public class CodeRequest {
     private String language;
 
     @NotBlank(message = "UUID cannot be blank")
-    private UUID uuid;
+    private String uuid;
 
     private int timeout = 15;
 
     public CodeRequest(){}
 
-    public CodeRequest(String code, String language, int timeout, UUID uuid){
+    public CodeRequest(String code, String language, int timeout, String uuid){
         this.code = code;
         this.language = language;
         this.timeout = timeout;
@@ -30,6 +30,6 @@ public class CodeRequest {
 
     public String getCode(){ return this.code; }
     public String getLanguage(){ return  this.language; }
-    public UUID getUuid() { return this.uuid; }
+    public String getUuid() { return this.uuid; }
     public int getTimeout(){ return this.timeout; }
 }

@@ -21,7 +21,7 @@ public class JavaCodeExecutor {
         if(!tempDir.mkdirs())
             System.out.println("Directory Already Exists: " + tempDir.getAbsolutePath());
 
-        File codeFile = new File(tempDir, "TempCode.java");
+        File codeFile = new File(tempDir, "Main.java");
         try(PrintWriter writer = new PrintWriter(codeFile)){
             writer.write(code);
         }
@@ -32,7 +32,7 @@ public class JavaCodeExecutor {
         return files;
     }
 
-    private int compileCode(File tempDir, UUID id) throws IOException, InterruptedException {
+    private int compileCode(File tempDir, String id) throws IOException, InterruptedException {
         List<String> command = Arrays.asList(
                 "docker", "run", "--rm",
                 "-v", tempDir.getAbsolutePath() + ":/app",
@@ -40,7 +40,7 @@ public class JavaCodeExecutor {
                 "--cpus", "0.5",
                 "--network", "none",
                 "java-secure-exec",
-                "javac", "/app/TempCode.java"
+                "javac", "/app/Main.java"
         );
 
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -52,7 +52,7 @@ public class JavaCodeExecutor {
         return process.waitFor();
     }
     // Execute compiled Java code in Docker
-    private void run(File tempDir, UUID id) throws IOException, InterruptedException {
+    private void run(File tempDir, String id) throws IOException, InterruptedException {
         List<String> command = Arrays.asList(
                 "docker", "run", "--rm",
                 "-v", tempDir.getAbsolutePath() + ":/app",
@@ -60,7 +60,7 @@ public class JavaCodeExecutor {
                 "--cpus", "0.5",
                 "--network", "none",
                 "java-secure-exec",
-                "java", "-cp", "/app", "TempCode"
+                "java", "-cp", "/app", "Main"
         );
 
 
@@ -73,7 +73,7 @@ public class JavaCodeExecutor {
         process.waitFor();
     }
 
-    public void executeCode(String code, UUID id) throws IOException, InterruptedException {
+    public void executeCode(String code, String id) throws IOException, InterruptedException {
         Map<String, File> files = writeToTempFile(code);
         File tempDir = files.get("tempDir");
         File codeFile = files.get("codeFile");
@@ -99,15 +99,15 @@ public class JavaCodeExecutor {
         if(!codeFile.delete())
             throw new RuntimeException("failed to delete file: " + codeFile.getName());
 
-        if(!new File(tempDir, "TempCode.class").delete())
-            throw new RuntimeException("failed to delete file: TempCode.class");
+        if(!new File(tempDir, "Main.class").delete())
+            throw new RuntimeException("failed to delete file: Main.class");
 
         if(!tempDir.delete())
             throw new RuntimeException("failed to delete file: " + tempDir.getName());
     }
 
     // Utility to read stream into string
-    private void readStream(InputStream stream, UUID id) throws IOException {
+    private void readStream(InputStream stream, String id) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = reader.readLine()) != null) {

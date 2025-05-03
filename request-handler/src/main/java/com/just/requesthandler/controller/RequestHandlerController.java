@@ -23,9 +23,10 @@ public class RequestHandlerController {
 
     @PostMapping
     public ResponseEntity<String> run(@Valid @RequestBody CodeRequest codeRequest){
-        UUID uuid = UUID.randomUUID();
+        String uuid = codeRequest.getUuid() == null ? UUID.randomUUID().toString() : codeRequest.getUuid();
+
         QueueDataWrapper queueDataWrapper = new QueueDataWrapper(codeRequest.getCode(), codeRequest.getLanguage(), uuid, codeRequest.getTimeout());
         service.forward(queueDataWrapper);
-        return ResponseEntity.status(HttpStatus.OK).body(uuid.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(uuid);
     }
 }

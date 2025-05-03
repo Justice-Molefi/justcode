@@ -13,16 +13,19 @@ public class CodeRequest {
     private String language;
 
     private int timeout = 15;
+    private String uuid;
 
     public CodeRequest(){}
 
-    public CodeRequest(String code, String language, int timeout){
+    public CodeRequest(String code, String language, int timeout, String uuid){
         this.code = code;
         this.language = language;
         this.timeout = timeout;
+        this.uuid = uuid;
     }
 
     public String getCode(){ return this.code; }
     public String getLanguage(){ return  this.language; }
     public int getTimeout(){ return this.timeout; }
+    public String getUuid(){ return this.uuid; }
 }
