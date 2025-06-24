@@ -1,12 +1,13 @@
 services:
   rabbitmq:
-    container_name: 'jc-rabbit'
-    image: 'rabbitmq:latest'
+    container_name: jc-rabbit
+    image: rabbitmq:3-management
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      - RABBITMQ_DEFAULT_USER=myuser
+      - RABBITMQ_DEFAULT_PASS=secret
     ports:
       - '5672:5672'
+      - '15672:15672'  # Optional: Management UI
 
   java-executor:
     build:
@@ -17,6 +18,13 @@ services:
     cpus: 0.5
     network_mode: none
     user: appuser
+    depends_on:
+      - rabbitmq
+    environment:
+        SPRING_RABBITMQ_HOST: rabbitmq
+        SPRING_RABBITMQ_PORT: 5672
+        SPRING_RABBITMQ_USERNAME: myuser
+        SPRING_RABBITMQ_PASSWORD: secret
     deploy:
       mode: replicated
       replicas: 0
