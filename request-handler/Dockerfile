@@ -8,7 +8,7 @@ USER appuser
 WORKDIR /app
 
 # Copy the JAR from Maven target folder
-COPY --chown=appuser:appuser target/*.jar app.jar
+COPY --chown=appuser:appuser target/request-handler-0.0.1-SNAPSHOT.jar
 
 # Expose the app port (Spring default is 8080; change if needed)
 EXPOSE 8080

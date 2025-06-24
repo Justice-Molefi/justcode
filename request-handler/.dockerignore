@@ -1,0 +1,6 @@
+target/
+!target/request-handler-0.0.1-SNAPSHOT.jar
+!.mvn
+*.log
+*.iml
+.idea/

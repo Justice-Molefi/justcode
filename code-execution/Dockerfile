@@ -8,7 +8,7 @@ USER appuser
 WORKDIR /app
 
 # Copy the compiled JAR (adjust name if needed)
-COPY --chown=appuser:appuser target/*.jar app.jar
+COPY --chown=appuser:appuser target/code-execution-0.0.1-SNAPSHOT.jar app.jar
 
 # No port exposure needed since this is internal
 # EXPOSE is omitted on purpose
