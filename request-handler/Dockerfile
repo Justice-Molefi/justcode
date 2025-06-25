@@ -1,17 +1,14 @@
-FROM openjdk:17-slim
+# Stage 1: Build
+FROM maven:3.9-eclipse-temurin-17 AS builder
+WORKDIR /build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Create a user and switch to non-root
+# Stage 2: Run
+FROM openjdk:17-slim
 RUN useradd -m appuser
 USER appuser
-
-# Create app directory and set working dir
 WORKDIR /app
-
-# Copy the JAR from Maven target folder
-COPY --chown=appuser:appuser target/request-handler-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose the app port (Spring default is 8080; change if needed)
+COPY --from=builder /build/target/*.jar app.jar
 EXPOSE 8080
-
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

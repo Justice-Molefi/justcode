@@ -1,17 +1,13 @@
-FROM openjdk:17-slim
+# Stage 1: Build the Spring Boot JAR
+FROM maven:3.9-eclipse-temurin-17 AS builder
+WORKDIR /build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Create a non-root user
+# Stage 2: Run the app
+FROM openjdk:17-slim
 RUN useradd -m appuser
 USER appuser
-
-# Set working directory
 WORKDIR /app
-
-# Copy the compiled JAR (adjust name if needed)
-COPY --chown=appuser:appuser target/code-execution-0.0.1-SNAPSHOT.jar app.jar
-
-# No port exposure needed since this is internal
-# EXPOSE is omitted on purpose
-
-# Run the Spring Boot worker
+COPY --from=builder /build/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
