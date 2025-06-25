@@ -9,5 +9,5 @@ FROM openjdk:17-slim
 RUN useradd -m appuser
 USER appuser
 WORKDIR /app
-COPY --from=builder /build/target/*.jar app.jar
+COPY --from=builder /build/target/code-execution-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
