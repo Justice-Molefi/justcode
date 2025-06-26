@@ -20,6 +20,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/code-output").setAllowedOrigins("https://justcode.vercel.app") ;
+        registry.addEndpoint("/code-output").setAllowedOrigins("https://justcodee.vercel.app") ;
     }
 }
