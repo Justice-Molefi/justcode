@@ -81,14 +81,14 @@ public class JavaCodeExecutor {
         try{
             // Step 1: Compile the code
             int exitCode = compileCode(tempDir,id);
-
             // Step 2: Execute if compilation succeeded
             if (exitCode == 0) {
-                websocketService.sendOutput(id,"Compilation successful");
-                websocketService.sendOutput(id,"Executing code...");
+                websocketService.sendOutput(id,":: Compilation successful");
+                websocketService.sendOutput(id,":: Executing code...");
                 run(tempDir, id);
+                websocketService.sendOutput(id, ":: Code Execution Complete");
             } else {
-                System.out.println("Execution skipped due to compilation failure.");
+                System.out.println(":: Execution skipped due to compilation failure.");
             }
         }finally {
             cleanUp(codeFile, tempDir);
