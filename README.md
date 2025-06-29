@@ -11,6 +11,10 @@ This project is a lightweight online code runner designed for rapid testing and 
 - **Instant Output:** Receive immediate feedback on your code execution results.
 - **No Authentication Required:** Get started quickly without the need for user accounts or authentication.
 
+## Sreenshots
+![Image](https://github.com/user-attachments/assets/c6060ff7-ebeb-41cd-921e-487628e51f12)
+![Image](https://github.com/user-attachments/assets/d877e415-bcd7-4a6d-9059-909ea3054793)
+
 ## Technologies Used
 
 - **Frontend:**
@@ -38,52 +42,23 @@ This project is a lightweight online code runner designed for rapid testing and 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Justice-Molefi/just-code-e.git
-   cd just-code-e
+   git clone https://github.com/Justice-Molefi/justcode.git
+   cd justcode
    ```
 
-2. **Backend Setup:**
-
-   - Navigate to the backend directory:
-     ```bash
-     cd backend
-     ```
-
+2. **Setup:**
    - Build and run the Spring Boot application:
      ```bash
      ./mvnw spring-boot:run
      ```
-   - Access the backend API at `http://localhost:8080`
+   - Access the request-handler API at `http://localhost:8080`
+   - Access the code-execution module at `http://localhost:8081`
 
-3. **Frontend Setup:**
 
-   - Navigate to the frontend directory:
-     ```bash
-     cd frontend
-     ```
-
-   - Install dependencies:
-     ```bash
-     npm install
-     ```
-
-   - Start the frontend application:
-     ```bash
-     npm start
-     ```
-   - - Access the front at `http://localhost:4200`
-
-## Usage
-
-1. Write your Java code in the editor.
-2. Click the "Run" button to send your code to the backend for execution.
-3. View the output in the designated results area below the editor.
-![Image](https://github.com/user-attachments/assets/d877e415-bcd7-4a6d-9059-909ea3054793)
 
 ## Future Enhancements
 
 - Add support for other languages.
-- Isolate the code execution environment in the backend.
 
 ## Contributing
 
