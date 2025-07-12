@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/run")
-@CrossOrigin(origins = "https://justcodee.vercel.app")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class RequestHandlerController {
     private final CodeService service;
 

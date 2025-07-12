@@ -9,33 +9,33 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  request-handler:
-    build:
-      context: .
-      dockerfile: request-handler/Dockerfile
-    image: request-handler-service
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=myuser
-      - SPRING_RABBITMQ_PASSWORD=secret
-    depends_on:
-      - rabbitmq
-
-  code-executor:
-    build:
-      context: .
-      dockerfile: code-execution/Dockerfile
-    image: code-execution-service
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=myuser
-      - SPRING_RABBITMQ_PASSWORD=secret
-    depends_on:
-      - rabbitmq
-      - request-handler
+#  request-handler:
+#    build:
+#      context: .
+#      dockerfile: request-handler/Dockerfile
+#    image: request-handler-service
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_RABBITMQ_HOST=rabbitmq
+#      - SPRING_RABBITMQ_PORT=5672
+#      - SPRING_RABBITMQ_USERNAME=myuser
+#      - SPRING_RABBITMQ_PASSWORD=secret
+#    depends_on:
+#      - rabbitmq
+#
+#  code-executor:
+#    build:
+#      context: .
+#      dockerfile: code-execution/Dockerfile
+#    image: code-execution-service
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      - SPRING_RABBITMQ_HOST=rabbitmq
+#      - SPRING_RABBITMQ_PORT=5672
+#      - SPRING_RABBITMQ_USERNAME=myuser
+#      - SPRING_RABBITMQ_PASSWORD=secret
+#    depends_on:
+#      - rabbitmq
+#      - request-handler

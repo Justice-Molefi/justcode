@@ -19,11 +19,7 @@ public class CodeService {
     }
 
     public void forward(QueueDataWrapper queueDataWrapper){
-        System.out.println("Sending message...");
         rabbitTemplate.convertAndSend(config.getTopicExchangeName(), config.getRoutingKey(), queueDataWrapper, message -> {
-            System.out.println("Sent Headers: " + message.getMessageProperties().getHeaders());
-            System.out.println("Sent Content Type: " + message.getMessageProperties().getContentType());
-            System.out.println("Sent Body: " + new String(message.getBody()));
             return message;});
     }
 }

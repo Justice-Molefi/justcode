@@ -16,9 +16,8 @@ public class WebsocketService {
     }
 
     public void sendOutput(String id, String output){
-        log.info("Sending: WS");
+        log.info("Sending message to client");
         String destination = "queue/response/" + id;
         messagingTemplate.convertAndSend(destination, output);
-        log.info("WS DONE");
     }
 }

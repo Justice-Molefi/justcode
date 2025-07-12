@@ -1,7 +1,9 @@
 package com.just.codeexecution.rabbitMQ;
 
 import com.just.codeexecution.dto.CodeRequest;
-import com.just.codeexecution.execution.java.JavaCodeExecutor;
+import com.just.codeexecution.execution.processor.CodeExecutor;
+import com.just.codeexecution.execution.factory.CodeExecutorFactory;
+import com.just.codeexecution.websocket.WebsocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +15,10 @@ import org.springframework.stereotype.Component;
 public class RabbitMQConsumer {
     private static final Logger log = LoggerFactory.getLogger(RabbitMQConsumer.class);
     private final String queueName = "code.request";
-    private final JavaCodeExecutor javaCodeExecutor;
+    private final WebsocketService websocketService;
 
-    public RabbitMQConsumer(JavaCodeExecutor javaCodeExecutor) {
-        this.javaCodeExecutor = javaCodeExecutor;
+    public RabbitMQConsumer(WebsocketService service) {
+        this.websocketService = service;
     }
 
     @RabbitListener(queues = queueName)
@@ -24,9 +26,11 @@ public class RabbitMQConsumer {
         log.info("Received payload {} from Queue {}", codeRequest, queueName);
 
         try{
-            javaCodeExecutor.executeCode(codeRequest.getCode(), codeRequest.getUuid());
+            CodeExecutor codeExecutor = CodeExecutorFactory.getExecutor(codeRequest.getLanguage(), websocketService);
+            codeExecutor.process(codeRequest.getCode(), codeRequest.getUuid());
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
+            websocketService.sendOutput(codeRequest.getUuid(), ">> Something went wrong, Please try again later");
         }
     }
 }
